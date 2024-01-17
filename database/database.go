@@ -9,7 +9,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const ConnStr = "mongodb+srv://maadiab:Aa@123@cluster0.elmsjsb.mongodb.net/?retryWrites=true&w=majority"
+const ConnStr = "mongodb+srv://maadiab:Aa123123@cluster0.elmsjsb.mongodb.net/?retryWrites=true&w=majority"
+
+// Aa123123
 const dbName = "Lessons"
 const colName = "LessonList"
 

@@ -13,7 +13,7 @@ import (
 
 // Helper
 
-func insertOneRecord(lesson Models.Lesson) {
+func InsertOneRecord(lesson Models.Lesson) {
 	inserted, err := database.Mcollection.InsertOne(context.Background(), lesson)
 	if err != nil {
 		log.Fatal(err)
@@ -24,7 +24,7 @@ func insertOneRecord(lesson Models.Lesson) {
 
 // update 1 record
 
-func updateOneRecord(lessonId string) {
+func UpdateOneRecord(lessonId string) {
 	id, _ := primitive.ObjectIDFromHex(lessonId)
 	filter := bson.M{"_id": id}
 	update := bson.M{"$set": bson.M{"watched": true}}
@@ -38,7 +38,7 @@ func updateOneRecord(lessonId string) {
 
 // delete 1 record
 
-func deleteOneRecord(lessonId string) {
+func DeleteOneRecord(lessonId string) {
 	id, _ := primitive.ObjectIDFromHex(lessonId)
 	filter := bson.M{"_id": id}
 	deleteCount, err := database.Mcollection.DeleteOne(context.Background(), filter)
@@ -52,7 +52,7 @@ func deleteOneRecord(lessonId string) {
 
 // delete all or many
 
-func deleteAllRecords() int64 {
+func DeleteAllRecords() int64 {
 	deleteResult, err := database.Mcollection.DeleteMany(context.Background(), bson.D{{}}, nil)
 	if err != nil {
 		log.Fatal(err)
@@ -61,4 +61,27 @@ func deleteAllRecords() int64 {
 	fmt.Println("Number of lessons deleted", deleteResult.DeletedCount)
 	return deleteResult.DeletedCount
 
+}
+
+// All lessons from mongoDB
+
+func GetAllRecord() []primitive.M {
+	cur, err := database.Mcollection.Find(context.Background(), bson.D{{}})
+	if err != nil {
+		log.Fatal(err)
+	}
+	var lessons []primitive.M
+
+	for cur.Next(context.Background()) {
+		var lesson bson.M
+		err := cur.Decode(&lesson)
+		if err != nil {
+			log.Fatal(err)
+		}
+		lessons = append(lessons, lesson)
+
+	}
+
+	defer cur.Close(context.Background())
+	return lessons
 }
