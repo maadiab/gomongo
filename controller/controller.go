@@ -11,7 +11,7 @@ import (
 )
 
 type UserAPI struct {
-	userDB database.UserDB
+	user_DB database.UserDB
 }
 
 // Get all records
@@ -30,7 +30,7 @@ func (a UserAPI) AddUser(w http.ResponseWriter, r *http.Request) {
 		// handle error
 	}
 
-	user, err = a.userDB.AddUser(r.Context(), user)
+	user, err = a.user_DB.AddUser(r.Context(), user)
 	if err != nil {
 		// handle error
 	}

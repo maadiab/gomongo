@@ -11,7 +11,7 @@ func New(db database.Database) *mux.Router {
 
 	router.HandleFunc("/api/lessons", controller.GetAllRecordsFromDB).Methods("GET")
 
-	userAPI := controller.UserAPI{userDB: db}
+	userAPI := controller.UserAPI{db: user_DB}
 
 	router.HandleFunc("/api/lesson", userAPI.AddUser).Methods("POST")
 	router.HandleFunc("/api/lesson/{id}", controller.MarkAsWatched).Methods("PUT")
