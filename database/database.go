@@ -2,42 +2,25 @@ package database
 
 import (
 	"context"
-	"fmt"
-	"log"
 
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
-const ConnStr = "mongodb+srv://maadiab:Aa123123@cluster0.elmsjsb.mongodb.net/?retryWrites=true&w=majority"
-
-// Aa123123
-const dbName = "Lessons"
-const colName = "LessonList"
-
-// MOST IMPORTANT
-
-var Mcollection *mongo.Collection
-
-func init() {
-	// Client options
-	clientOptions := options.Client().ApplyURI(ConnStr)
-
-	// Connect to mongo db
-	client, err := mongo.Connect(context.TODO(), clientOptions)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("connection sucess!!")
-
-	Mcollection = client.Database(dbName).Collection(colName)
-
-	// Collection reference is  ready
-
-	fmt.Println("Collection instance is ready!")
-
+type Database interface {
+	UserDB
 }
 
-// Mongo
+type database struct {
+	db *sqlx.DB
+}
+
+func connect(ctx context.Context) (*sqlx.DB, error) {
+	db, err := sqlx.ConnectContext(ctx, "postgres", "user=postgres host=127.0.0.1 dbname=hello password=passwd sslmode=disable")
+	return db, err
+}
+
+func New(ctx context.Context) (Database, error) {
+	db, err := connect(ctx)
+	return &database{db: db}, err
+}

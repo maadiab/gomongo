@@ -5,9 +5,14 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/maadiab/gomongo/core"
+	"github.com/maadiab/gomongo/database"
 	"github.com/maadiab/gomongo/helper"
-	models "github.com/maadiab/gomongo/model"
 )
+
+type UserAPI struct {
+	userDB database.UserDB
+}
 
 // Get all records
 func GetAllRecordsFromDB(w http.ResponseWriter, r *http.Request) {
@@ -16,15 +21,24 @@ func GetAllRecordsFromDB(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(allRecords)
 }
 
-func CreateRecord(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/x-form-www-form-urlencode")
-	w.Header().Set("Allow-Control-Allow-Methods", "POST")
+func (a UserAPI) AddUser(w http.ResponseWriter, r *http.Request) {
+	//w.Header().Set("Content-Type", "application/x-form-www-form-urlencode")
+	//w.Header().Set("Allow-Control-Allow-Methods", "POST")
+	var user core.User
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		// handle error
+	}
 
-	var lesson models.Lesson
-	_ = json.NewDecoder(r.Body).Decode(&lesson)
-	helper.InsertOneRecord(lesson)
-	json.NewEncoder(w).Encode(lesson)
+	user, err = a.userDB.AddUser(r.Context(), user)
+	if err != nil {
+		// handle error
+	}
 
+	err = json.NewEncoder(w).Encode(user)
+	if err != nil {
+		// handler error
+	}
 }
 
 // Mark as watched
