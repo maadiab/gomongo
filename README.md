@@ -1,2 +1,2 @@
 # gomongo
-basic api using mongodb
+basic api using postgresql
